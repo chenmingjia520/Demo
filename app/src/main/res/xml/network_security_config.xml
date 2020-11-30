@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--解除Android9.0不能使用明文http网络请求的限制，目前是为了适配阿里云推送SDK使用，
+后续需要提高阿里云推送sdk的版本-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

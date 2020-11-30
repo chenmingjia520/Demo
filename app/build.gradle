@@ -1,0 +1,130 @@
+apply plugin: 'com.android.application'
+
+android {
+    useLibrary 'org.apache.http.legacy'
+
+    signingConfigs {
+        config {
+            keyAlias 'lianyou'
+            keyPassword 'ezcx@2'
+            storeFile file('../lianyou_member.jks')
+            storePassword 'ezcx@2'
+        }
+    }
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    defaultConfig {
+//        applicationId "cn.ptaxi.lianyouclient"
+        applicationId "com.lanyoumobility.mobility_webview"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+
+        packagingOptions {
+            //解决编译时com.android.builder.merge.DuplicateRelativeFileException: More than one file was found with OS independent path 'META-INF/rxjava.properties'这个错误
+            exclude 'META-INF/rxjava.properties'
+        }
+
+        ndk {
+//            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+            abiFilters "armeabi-v7a"
+        }
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            //使用release的签名
+            signingConfig signingConfigs.config
+            //是否开启混淆
+            minifyEnabled true
+            //对齐优打包的apk
+            zipAlignEnabled true
+            //去除无用资源
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //统一配置第三方平台key
+            //统一配置第三方平台key
+            manifestPlaceholders = [
+                    APP_PACKAGE  : APP_PACKAGE,
+                    UMENG_APPKEY : UMENG_APPKEY,
+                    QQ_APP_ID    : QQ_APP_ID,
+                    JPUSH_APPKEY : JPUSH_APPKEY,//值来自开发者平台取得的AppKey
+                    JPUSH_CHANNEL: JPUSH_CHANNEL
+            ]
+        }
+        debug {
+            //使用release的签名
+            signingConfig signingConfigs.config
+            //是否开启混淆
+            minifyEnabled false
+            //对齐优打包的apk
+            zipAlignEnabled false
+            //去除无用资源
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //统一配置第三方平台key
+            //统一配置第三方平台key
+            manifestPlaceholders = [
+                    APP_PACKAGE  : APP_PACKAGE,
+                    UMENG_APPKEY : UMENG_APPKEY,
+                    QQ_APP_ID    : QQ_APP_ID,
+                    JPUSH_APPKEY : JPUSH_APPKEY,//值来自开发者平台取得的AppKey
+                    JPUSH_CHANNEL: JPUSH_CHANNEL
+            ]
+        }
+
+        //修改打包apk文件名称
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "lianyoucx_webview_${variant.name}_v${variant.versionName}.apk"
+            }
+        }
+
+    }
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/notice.txt'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api rootProject.ext.dependencies.butterknife
+    annotationProcessor rootProject.ext.dependencies.butterknife_compiler
+    //------------官方依赖库--------------
+    api rootProject.ext.dependencies.appcompat_v7
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'org.litepal.android:java:3.0.0'
+    implementation files('libs/dom4j-1.6.1.jar')
+    implementation files('libs/poi-3.9.jar')
+    implementation files('libs/poi-ooxml-3.9.jar')
+    implementation files('libs/poi-ooxml-schemas-3.9.jar')
+    implementation files('libs/stax-api-1.0.1.jar')
+    implementation files('libs/xmlbeans-2.3.0.jar')
+}

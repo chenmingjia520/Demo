@@ -1,0 +1,239 @@
+ext {
+    android = [
+            versionCode      : 1, //41 版本号 44
+            versionName      : "1.0.0", // 5.0.1版本名
+            minSdkVersion    : 21,
+            targetSdkVersion : 28,  //28
+            compileSdkVersion: 29, //30、28
+            buildToolsVersion: "28.0.3",
+    ]
+//    //兼容旧版本的官方support库版本
+//    //def VERSION  = "26.1.0"
+//
+//    //================新模块使用的依赖版本号================
+    versions = [
+            android_gradle_plugin: '3.6.3',    //gradle插件版本   //4.0.0
+
+            support              : '28.0.0',   //官方依赖包版本
+//            constraintlayout     : '1.1.3',   //官方约束布局依赖版本
+//            google_flexbox       : '1.0.0',   //官方提供的流式布局处理方案（1.1.0以上需要Android X）
+//
+//            kotlin               : '1.3.61',
+//            kotlin_coroutines    : '1.0.0',
+//            anko                 : '0.10.3',
+//
+//            multidex             : '1.0.3',
+//
+//            android_maven_gradle : '2.1',
+//            gradle_bintray_plugin: '1.8.4',
+//            //----------- RxJava2库 ----------------
+//            rxjava2             : '2.2.9',
+//            rxkotlin2           : '2.2.0',
+//            rxandroid2          : '2.1.1',
+//            rxbinding2          : '2.2.0',
+//            rxrelay             : '2.1.0',    //rxRelay库，提供只有OnNext的Subject
+//            autodispose         : '0.8.0',    //自动管理rxJava内存泄漏问题，0.8.0版本以上需要AndroidX
+//            //----------- 网络库 -------------------
+//            fastjson            : '1.1.70.android',  //fastJson.android包版本（暂无使用）
+            retrofit            : '2.5.0',
+            okhttp3             : '3.12.1',
+            okio                : '1.15.0',
+            gson                : '2.8.2',     //gson解析
+            okhttp3loginterceptor : '3.4.1', //okHttp3的日志拦截器
+//            fastjsonconverter   : '2.1.0',     //Retrofit的fastJson解析器
+//            //---------- 其他 -------------
+            glide               : '4.9.0',     //glide图片库
+
+            butterknife               : '9.0.0',     //butterknife框架
+//
+//            timber              : '4.7.1',     //日志记录库
+//            avloadingindicator  : '2.1.3',     //第三方loading动画组件版本
+//            app_joint_core      : '1.7',        //轻量级组件化框架依赖，在每个组件化的module中依赖
+//            android_pickerview  : '4.1.9',      //仿iOS的PickerView控件（https://github.com/Bigkoo/Android-PickerView）
+//
+//            zxing               : '3.3.0',      //扫描二维码
+    ]
+
+    //======================== 插件库 ===================================
+
+    plugins = [
+            android_gradle    : [group  : 'com.android.tools.build', name: 'gradle',
+                                 version: versions.android_gradle_plugin],
+//            classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0'
+            butterknife_gradle: [group  : 'com.jakewharton', name: 'butterknife-gradle-plugin',
+                                   version: versions.butterknife],
+//            kotlin_gradle       : [group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin',
+//                                   version: versions.kotlin],
+//            //AppJoint 轻量级组件化插件（https://github.com/PrototypeZ/AppJoint/blob/master/README_zh.md）
+//            app_joint_plugin    : [group: 'io.github.prototypez', name: 'app-joint',
+//                                   version: versions.app_joint_core],
+//            android_maven_gradle: [group: 'com.github.dcendents', name: 'android-maven-gradle-plugin',
+//                                    version: versions.android_maven_gradle],
+//            gradle_bintray_plugin : [group: 'com.jfrog.bintray.gradle', name: 'gradle-bintray-plugin',
+//                                     version: versions.gradle_bintray_plugin],
+//
+    ]
+
+    dependencies = [
+            //------------------- 官方依赖库 ------------------
+            //*************Support*****************
+            appcompat_v7    : [group: 'com.android.support', name: 'appcompat-v7',
+                               version: versions.support],
+//            support_v13     : [group: 'com.android.support', name: 'support-v13',
+//                               version: versions.support],
+//            design          : [group: 'com.android.support', name: 'design',
+//                               version: versions.support],
+//            recyclerview    : [group: 'com.android.support', name: 'recyclerview-v7',
+//                               version: versions.support],
+//            cardview        : [group: 'com.android.support', name: 'cardview-v7',
+//                               version: versions.support],
+//
+//            constraintlayout: [group: 'com.android.support.constraint', name: 'constraint-layout',
+//                               version: versions.constraintlayout],
+//            google_flexbox  : [group: 'com.google.android', name: 'flexbox',
+//                               version: versions.google_flexbox],
+//
+//            multidex        : [group: 'com.android.support', name: 'multidex',
+//                               version: versions.multidex],
+//
+//            //---------------------------- Kotlin库 ---------------------
+//            kotlin_stdlib   : [group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk7',
+//                               version: versions.kotlin],
+//            kotlin_coroutines: [group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android',
+//                                version: versions.kotlin_coroutines],
+//            anko_common     :  [group: 'org.jetbrains.anko', name: 'anko-common',
+//                                version: versions.anko],
+//
+            //------------RxJava------------------
+            "rxjava"              : "io.reactivex:rxjava:1.1.0",
+            "rxandroid"           : "io.reactivex:rxandroid:1.1.0",
+
+            rxjava2         : [group: 'io.reactivex.rxjava2', name: 'rxjava',
+                               version: versions.rxjava2],
+            rxandroid2      : [group: 'io.reactivex.rxjava2', name: 'rxandroid',
+                               version: versions.rxandroid2],
+            rxkotlin2       : [group: 'io.reactivex.rxjava2', name: 'rxkotlin',
+                               version: versions.rxkotlin2],
+//
+//            //RxRelay,提供只有OnNext的Subject,方便实现RxBus（不会因为error中断事件流）
+//            rxrelay         : [group: 'com.jakewharton.rxrelay2', name: 'rxrelay',
+//                               version: versions.rxrelay],
+//            //RxBinding
+//            rxbinding       : [group: 'com.jakewharton.rxbinding2', name: 'rxbinding',
+//                               version: versions.rxbinding2],
+//            rxbinding_design: [group: 'com.jakewharton.rxbinding2', name: 'rxbinding-design',
+//                               version: versions.rxbinding2],
+//            rxbinding_recyclerview: [group: 'com.jakewharton.rxbinding2', name: 'rxbinding-recyclerview-v7',
+//                                     version: versions.rxbinding2],
+//            //自动管理rxJava2订阅生命周期
+//            autodispose     : [group: 'com.uber.autodispose', name: 'autodispose',
+//                               version: versions.autodispose],
+//            autodispose_android_archcomponents : [group: 'com.uber.autodispose', name: 'autodispose-android-archcomponents',
+//                                                  version: versions.autodispose],
+//
+            //-------------------retrofit网络库----------------------
+//            "retrofit"            : "com.squareup.retrofit2:retrofit:2.5.0",
+//            "retrofit-converter"  : "com.squareup.retrofit2:converter-gson:2.5.0",
+            //兼容rxJava1.x版本的retrofit适配器，用于兼容旧模块
+            "retrofit-adapter-rxjava"    : "com.squareup.retrofit2:adapter-rxjava:2.5.0",
+
+            okhttp3         : [group: 'com.squareup.okhttp3', name: 'okhttp',
+                               version: versions.okhttp3],
+            okio            : [group: 'com.squareup.okio', name: 'okio',
+                               version: versions.okio],
+            //okhttp3日志拦截器（只在旧模块使用）
+            okhttp3_loging  : [group: 'com.squareup.okhttp3', name: 'logging-interceptor',
+                               version: versions.okhttp3loginterceptor],
+            gson            : [group: 'com.google.code.gson', name: 'gson',
+                               version: versions.gson],
+//            //fastjson解析（暂无使用）
+//            fastjson        : [group: 'com.alibaba', name: 'fastjson',
+//                               version: versions.fastjson],
+//
+            retrofit        : [group: 'com.squareup.retrofit2', name: 'retrofit',
+                               version: versions.retrofit],
+            retrofit_rxjava2: [group: 'com.squareup.retrofit2', name: 'adapter-rxjava2',
+                               version: versions.retrofit],
+            //retrofit支持gson解析
+            retrofit_gson   : [group: 'com.squareup.retrofit2', name: 'converter-gson',
+                               version: versions.retrofit],
+            //retrofit支持解析成标准字符串
+            retrofit_scalars: [group: 'com.squareup.retrofit2', name: 'converter-scalars',
+                               version: versions.retrofit],
+//            //retrofit支持fastjson解析（暂无使用）
+//            retrofit_fastjson: [group: 'org.ligboy.retrofit2', name: 'converter-fastjson-android',
+//                                version: versions.fastjsonconverter],
+//            //--------------------其他工具-----------------------
+//            //tool
+////            "gson"                : "com.google.code.gson:gson:2.6.2",
+//            "butterknife"         : "com.jakewharton:butterknife:7.0.1",
+//            "butterknifecompiler"         : "com.jakewharton:butterknife-compiler:7.0.1",
+
+
+            butterknife: [group: 'com.jakewharton', name: 'butterknife',
+                               version: versions.butterknife],
+            butterknife_compiler: [group: 'com.jakewharton', name: 'butterknife-compiler',
+                               version: versions.butterknife],
+
+
+////            "multidex"            : "com.android.support:multidex:1.0.0",
+//            "eventbus"            : "org.greenrobot:eventbus:3.0.0",
+//
+//            //okhttp
+////            "okhttp"              : "com.squareup.okhttp3:okhttp:3.5.0",
+////            "okhttp-ws"           : "com.squareup.okhttp3:okhttp-ws:3.4.2",
+////            "logging-interceptor" : "com.squareup.okhttp3:logging-interceptor:3.4.1",
+//
+//
+//            //图片库
+//            "glide_v3"               : "com.github.bumptech.glide:glide:3.7.0",
+////            "glide_v3:okhttp3-integration": "com.github.bumptech.glide:okhttp3-integration:1.4.0@aar",
+//            "picasso"             : "com.squareup.picasso:picasso:2.5.2",
+//
+            //--------------图片库（新）------------------
+            glide           : [group: 'com.github.bumptech.glide', name: 'glide',
+                               version: versions.glide],
+            glide_annotations : [group: 'com.github.bumptech.glide', name: 'annotations',
+                                 version: versions.glide],
+            //需要使用annotationProcessor关键字添加依赖
+            glide_compiler  : [group: 'com.github.bumptech.glide', name: 'annotations',
+                               version: versions.glide],
+            //glide使用okhttp请求网络
+            glide_okhttp    : [group: 'com.github.bumptech.glide', name: 'okhttp3-integration',
+                               version: versions.glide],
+//
+//
+//            //----------------------other view----------------
+//            "pickerview"          : "com.bigkoo:pickerview:1.0.0",
+//            //星星
+//            "xlhratingbar_lib"    : "com.xingliuhua:xlhratingbar_lib:1.0.1",
+//            //刷新
+//            "materialrefeshlayout": "com.cjj.materialrefeshlayout:library:1.3.0",
+//            "circleimageview"     : "de.hdodenhof:circleimageview:2.1.0",
+//            "numberpicker"        : "com.shawnlin:number-picker:2.3.0",
+//            "wheelpicker"         : "cn.qqtheme.framework:WheelPicker:1.4.4",
+//
+//            //hotfix
+//            "hotfix"              : "com.aliyun.ams:alicloud-android-hotfix:3.0.9",
+//
+//            //日志记录库
+//            timber          : [group: 'com.jakewharton.timber', name: 'timber',
+//                               version: versions.timber],
+//
+//            //轻量级组件化框架依赖，需要在每个组件化的module中依赖(目前依赖于lib_base)
+//            app_joint_core  : [group: 'io.github.prototypez', name: 'app-joint-core',
+//                               version: versions.app_joint_core],
+//            //仿iOS的PickerView控件
+//            android_pickerview : [group: 'com.contrarywind', name: 'Android-PickerView',
+//                                  version: versions.android_pickerview],
+//
+//            //loading库
+//            avloadingindicator: [group: 'com.wang.avi', name: 'library',
+//                                 version: versions.avloadingindicator],
+//            //zxing二维码扫码库
+//            zxing_android_embedded : [group: 'com.journeyapps', name: 'zxing-android-embedded',
+//                                      version: versions.zxing],
+    ]
+
+
+}

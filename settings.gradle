@@ -1,0 +1,2 @@
+rootProject.name='Mobility_WebView'
+include ':app'
