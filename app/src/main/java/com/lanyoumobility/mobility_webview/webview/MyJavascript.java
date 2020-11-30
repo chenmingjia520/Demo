@@ -1,14 +1,19 @@
 package com.lanyoumobility.mobility_webview.webview;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.FileProvider;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import com.lanyoumobility.mobility_webview.BuildConfig;
 import com.lanyoumobility.mobility_webview.MainActivity;
 import com.lanyoumobility.mobility_webview.utils.Config;
 import com.lanyoumobility.mobility_webview.utils.FilesUtils;
 import com.lanyoumobility.mobility_webview.utils.L;
+import com.lanyoumobility.mobility_webview.utils.ShareUtils;
 import com.lanyoumobility.mobility_webview.utils.doc.WordUtils;
 
 import org.json.JSONObject;
@@ -112,6 +117,17 @@ public class MyJavascript extends Object {
             L.log(TAG, "getDownLoadImg:::::::::::::::::::::fileName:" +fileName);
            String filePath =  FilesUtils.decoderBase64ToFile(base64, Config.PATHS_IMG ,fileName);
             if(filePath!=null){
+                Uri uri = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+                    uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
+                } else {
+                    uri = Uri.fromFile(new File(filePath));
+                }
+                if(uri!=null){
+                    ShareUtils.shareFile(activity,uri);
+                }
+
                 activity.showToast("下载路径为:"+filePath);
                 return;
             }
@@ -171,6 +187,8 @@ public class MyJavascript extends Object {
     }
 
 
+
+
     /*
      * 获取用户信息
      */
@@ -184,6 +202,17 @@ public class MyJavascript extends Object {
             String fileName = jsonObject.getString("fileName");
             String filePath = FilesUtils.decoderBase64ToFile(base64, Config.PATHS_EXCEL ,fileName);
             if(filePath!=null){
+
+                Uri uri = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+                    uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
+                } else {
+                    uri = Uri.fromFile(new File(filePath));
+                }
+                if(uri!=null){
+                    ShareUtils.shareFile(activity,uri);
+                }
                 activity.showToast("下载路径为:"+filePath);
                 return;
             }

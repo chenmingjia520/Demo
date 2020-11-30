@@ -118,7 +118,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void normalStartSplash() {
-//        DirUtils.initDir();
+        DirUtils.initDir();
         initData();
     }
 
