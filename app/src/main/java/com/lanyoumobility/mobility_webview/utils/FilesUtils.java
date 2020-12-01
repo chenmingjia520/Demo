@@ -485,6 +485,26 @@ public class FilesUtils {
         writeToFile(file, content, false, "utf-8");
     }
 
+
+    /**
+     * Write the specified content to an specified file.
+     *
+     * @param content
+     */
+    public static void writeToLogFile(String content) {
+        try {
+            File file = new File (Config.PATHS_DATA+"/log.txt");
+            if(!file.exists()){
+                file.createNewFile();
+            }
+
+            writeToFile(file, content, false, "utf-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * Write the specified content to an specified file.
      *

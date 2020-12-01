@@ -1,6 +1,5 @@
 package com.lanyoumobility.mobility_webview.webview;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -13,7 +12,6 @@ import com.lanyoumobility.mobility_webview.MainActivity;
 import com.lanyoumobility.mobility_webview.utils.Config;
 import com.lanyoumobility.mobility_webview.utils.FilesUtils;
 import com.lanyoumobility.mobility_webview.utils.L;
-import com.lanyoumobility.mobility_webview.utils.ShareUtils;
 import com.lanyoumobility.mobility_webview.utils.doc.WordUtils;
 
 import org.json.JSONObject;
@@ -109,33 +107,53 @@ public class MyJavascript extends Object {
     @JavascriptInterface
     public void getDownLoadImg(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
         L.log(TAG, "getDownLoadImg:::::::::::::::::::::param:" + param);
-        activity.showToast("开始下载文件!");
-        try {
-            JSONObject jsonObject = new JSONObject(param);
-            String base64 = jsonObject.getString("base64");
-            String fileName = jsonObject.getString("fileName");
-            L.log(TAG, "getDownLoadImg:::::::::::::::::::::fileName:" +fileName);
-           String filePath =  FilesUtils.decoderBase64ToFile(base64, Config.PATHS_IMG ,fileName);
-            if(filePath!=null){
-                Uri uri = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
-                    uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
-                } else {
-                    uri = Uri.fromFile(new File(filePath));
+        activity.isLoding = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(param);
+                    String base64 = jsonObject.getString("base64");
+                    String fileName = jsonObject.getString("fileName");
+                    L.log(TAG, "getDownLoadImg:::::::::::::::::::::fileName:" +fileName);
+                    String filePath =  FilesUtils.decoderBase64ToFile(base64, Config.PATHS_IMG ,fileName);
+                    activity.isLoding = false;
+                    if(filePath!=null){
+                        Uri uri = null;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+                            uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
+                        } else {
+                            uri = Uri.fromFile(new File(filePath));
+                        }
+                        if(uri!=null){
+                            activity.shareFile(uri);
+                        }
+                        activity.showToast("下载路径为:"+filePath);
+                        return;
+                    }
+                } catch (Exception e) {
+                    L.log(TAG, "getDownLoadImg:::::::::::::::::::::Exception:" + e.toString());
                 }
-                if(uri!=null){
-                    ShareUtils.shareFile(activity,uri);
-                }
-
-                activity.showToast("下载路径为:"+filePath);
-                return;
+                activity.isLoding = false;
+                activity.showToast("下载文件失败!");
             }
-        } catch (Exception e) {
-            L.log(TAG, "getDownLoadImg:::::::::::::::::::::Exception:" + e.toString());
-        }
-        activity.showToast("下载文件失败!");
+        }).start();
     }
+
+
+    /*
+     * 获取用户信息
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @JavascriptInterface
+    public void showLoading(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
+        L.log(TAG, "getDownLoadImg:::::::::::::::::::::param:" + param);
+        activity.isLoding = true;
+        activity.showLoadings(param);
+    }
+
+
 
     /*
      * 获取用户信息
@@ -143,47 +161,57 @@ public class MyJavascript extends Object {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @JavascriptInterface
     public void getPrintingImg(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
-        activity.showToast("开始打印文件!");
-        try {
-            JSONObject jsonObject = new JSONObject(param);
-            String ProjectBase64 = jsonObject.getString("base64");
-            String fileName = jsonObject.getString("fileName");
+//        activity.showToast("开始打印文件!");
+        L.i(TAG,"getPrintingImg::::::::::::::");
+        activity.isLoding = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(param);
+                    String ProjectBase64 = jsonObject.getString("base64");
+                    String fileName = jsonObject.getString("fileName");
 
-            String  successPath = FilesUtils.decoderBase64ToFile(ProjectBase64, Config.PATHS_PRINTING ,fileName);
-            if (successPath!=null&&successPath.length()>0) {
-                JSONObject projectJSON = jsonObject.getJSONObject("projectInfo");
-                String partyABase64 = projectJSON.getString("partyA");
+                    String  successPath = FilesUtils.decoderBase64ToFile(ProjectBase64, Config.PATHS_PRINTING ,fileName);
+                    if (successPath!=null&&successPath.length()>0) {
+                        JSONObject projectJSON = jsonObject.getJSONObject("projectInfo");
+                        String partyABase64 = projectJSON.getString("partyA");
 
-                File filePartyA = null;
-                if (partyABase64 != null && !"".equals(partyABase64)) {
-                    String filePartyABase64Path =   FilesUtils.decoderBase64ToFile(partyABase64, Config.PATHS_PRINTING ,"autograph_" + fileName);
-                    if(filePartyABase64Path!=null&&filePartyABase64Path.length()>0){
-                        filePartyA = new File(filePartyABase64Path);
-                    }
-                }
+                        File filePartyA = null;
+                        if (partyABase64 != null && !"".equals(partyABase64)) {
+                            String filePartyABase64Path =   FilesUtils.decoderBase64ToFile(partyABase64, Config.PATHS_PRINTING ,"autograph_" + fileName);
+                            if(filePartyABase64Path!=null&&filePartyABase64Path.length()>0){
+                                filePartyA = new File(filePartyABase64Path);
+                            }
+                        }
 //               String imageNumber, String designer, String progress, String date, String manage, String description
-                String projectName = projectJSON.getString("projectName");
-                String imageNumber = projectJSON.getString("imageNumber");
-                String designer = projectJSON.getString("designer");
-                String progress = projectJSON.getString("progress");
-                String date = projectJSON.getString("date");
-                String manage = projectJSON.getString("manage");
-                String description = projectJSON.getString("description");
+                        String projectName = projectJSON.getString("projectName");
+                        String imageNumber = projectJSON.getString("imageNumber");
+                        String designer = projectJSON.getString("designer");
+                        String progress = projectJSON.getString("progress");
+                        String date = projectJSON.getString("date");
+                        String manage = projectJSON.getString("manage");
+                        String description = projectJSON.getString("description");
 
-                WordUtils wordUtils = new WordUtils();
-                L.log(TAG,"getPrintingImg :::::wordUtils::"+wordUtils);
-                boolean writeToWordSuccess = wordUtils.writeToWord(activity, projectName, imageNumber, designer, progress, date, manage, description, new File(successPath), filePartyA);
-                if (writeToWordSuccess) {
-                    activity.startIntentPrint(new File(Config.PATHS_PRINTING + "/" + projectName + ".doc"));
-                    return;
+                        WordUtils wordUtils = new WordUtils();
+                        L.log(TAG,"getPrintingImg :::::wordUtils::"+wordUtils);
+                        boolean writeToWordSuccess = wordUtils.writeToWord(activity, projectName, imageNumber, designer, progress, date, manage, description, new File(successPath), filePartyA);
+                        activity.isLoding = false;
+                        if (writeToWordSuccess) {
+                            activity.startIntentPrint(new File(Config.PATHS_PRINTING + "/" + projectName + ".doc"));
+                            return;
+                        }
+                        activity.hideLoading();
+                        return;
+                    }
+                } catch (Exception e) {
+                    L.log(TAG,"getPrintingImg :::::Exception::"+e.toString());
+
                 }
-                return;
+                activity.isLoding = false;
+                activity.showToast("打印文件失败!");
             }
-        } catch (Exception e) {
-            L.log(TAG,"getPrintingImg :::::Exception::"+e.toString());
-
-        }
-        activity.showToast("打印文件失败!");
+        }).start();
     }
 
 
@@ -195,31 +223,38 @@ public class MyJavascript extends Object {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @JavascriptInterface
     public void getDownLoadExcel(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
-        activity.showToast("开始导出excel");
-        try {
-            JSONObject jsonObject = new JSONObject(param);
-            String base64 = jsonObject.getString("data");
-            String fileName = jsonObject.getString("fileName");
-            String filePath = FilesUtils.decoderBase64ToFile(base64, Config.PATHS_EXCEL ,fileName);
-            if(filePath!=null){
+//        activity.showLoading("下载文件...");
+        activity.isLoding = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(param);
+                    String base64 = jsonObject.getString("data");
+                    String fileName = jsonObject.getString("fileName");
+                    String filePath = FilesUtils.decoderBase64ToFile(base64, Config.PATHS_EXCEL ,fileName);
+                    if(filePath!=null){
+                        activity.isLoding = false;
+                        Uri uri = null;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+                            uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
+                        } else {
+                            uri = Uri.fromFile(new File(filePath));
+                        }
+                        if(uri!=null){
+                            activity.shareFile(uri);
+                        }
+                        activity.showToast("下载路径为:"+filePath);
 
-                Uri uri = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
-                    uri = FileProvider.getUriForFile(activity, authority, new File(filePath));
-                } else {
-                    uri = Uri.fromFile(new File(filePath));
+                        return;
+                    }
+                }catch (Exception e){
                 }
-                if(uri!=null){
-                    ShareUtils.shareFile(activity,uri);
-                }
-                activity.showToast("下载路径为:"+filePath);
-                return;
+                activity.isLoding = false;
+                activity.showToast("导出失败!");
             }
-        }catch (Exception e){
-
-        }
-        activity.showToast("导出失败!");
+        }).start();
     }
 
     /*
@@ -233,7 +268,9 @@ public class MyJavascript extends Object {
                 directory.mkdirs();
             }
             File file = new File(Config.PATHS_DATA_FILE);
-            FilesUtils.writeToFile(file, param, false);
+            if(!activity.isLoding){
+                FilesUtils.writeToFile(file, param, false);
+            }
 //            Config.saveImageInfos(activity,param);
         }
     }
@@ -249,7 +286,7 @@ public class MyJavascript extends Object {
      */
     @JavascriptInterface
     public void getImageInfo(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
-        L.log(TAG, "getImageInfo:::::" + param);
+        activity.isLoding = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -295,6 +332,8 @@ public class MyJavascript extends Object {
                         }
                     });
                 }
+
+                activity.isLoding = false;
             }
         }).start();
     }
@@ -307,6 +346,7 @@ public class MyJavascript extends Object {
     @JavascriptInterface
     public void getImageInfoSuccess(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
         L.log(TAG, "getImageInfoSuccess:::::" + param);
+        activity.isLoding = false;
         webView.post(new Runnable() {
             @Override
             public void run() {

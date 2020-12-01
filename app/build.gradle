@@ -120,7 +120,7 @@ dependencies {
     //------------官方依赖库--------------
     api rootProject.ext.dependencies.appcompat_v7
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'org.litepal.android:java:3.0.0'
+
     implementation files('libs/dom4j-1.6.1.jar')
     implementation files('libs/poi-3.9.jar')
     implementation files('libs/poi-ooxml-3.9.jar')

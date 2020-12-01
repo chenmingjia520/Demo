@@ -4,6 +4,7 @@ package com.lanyoumobility.mobility_webview;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import com.lanyoumobility.mobility_webview.utils.Config;
 import com.lanyoumobility.mobility_webview.utils.DirUtils;
 import com.lanyoumobility.mobility_webview.utils.L;
+import com.lanyoumobility.mobility_webview.utils.ShareUtils;
 import com.lanyoumobility.mobility_webview.utils.ToastUtil;
 import com.lanyoumobility.mobility_webview.webview.MyJavascript;
 import com.lanyoumobility.mobility_webview.webview.MyWebChromeClient;
@@ -49,6 +51,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
+    public static boolean isLoding = true;
     private final String TAG = "MainActivity";
     @BindView(R.id.mWebView)
     WebView mWebView;
@@ -180,7 +183,6 @@ public class MainActivity extends BaseActivity {
         mWebView.setWebViewClient(new MyWebViewClient(tv_title_error, mWebView));
         mWebView.setWebChromeClient(myWebChromeClient);
         mWebView.setDownloadListener(new MyWebViewDownLoadListener(this));
-        showLoading("加载中...");
         mWebView.loadUrl("file:///android_asset/index.html");
     }
 
@@ -270,32 +272,41 @@ public class MainActivity extends BaseActivity {
 
     @SuppressLint("SetJavaScriptEnabled")
     public void saveImageInfo() {
-        if(mWebView!=null){
+        L.log(TAG,"开始保存信息...isLoding."+isLoding);
+        if(mWebView!=null&&!isLoding){
+            L.log(TAG,"开始保存信息....");
             mWebView.loadUrl("javascript:saveImageInfo()");
         }
     }
 
 
     public void startIntentPrint(File file) {
-        try {
-            Intent intent = new Intent();
-            intent.setAction("android.intent.action.VIEW");
-            intent.setPackage("com.dynamixsoftware.printershare");
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                hideLoading();
+                try {
+                    Intent intent = new Intent();
+                    intent.setAction("android.intent.action.VIEW");
+                    intent.setPackage("com.dynamixsoftware.printershare");
 //            intent.setPackage("com.zhprin.tthree");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
-                Uri contentUri = FileProvider.getUriForFile(this, authority, file);
-                intent.setDataAndType(contentUri, "application/msword");
-            } else {
-                intent.setDataAndType(Uri.fromFile(file), "application/msword");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        String authority = BuildConfig.APPLICATION_ID + ".fileprovider";
+                        Uri contentUri = FileProvider.getUriForFile(MainActivity.this, authority, file);
+                        intent.setDataAndType(contentUri, "application/msword");
+                    } else {
+                        intent.setDataAndType(Uri.fromFile(file), "application/msword");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ToastUtil.showToast(MainActivity.this, "请确保已安装'printershare'");
+                }
             }
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ToastUtil.showToast(this, "请确保已安装'printershare'");
-        }
+        });
+
     }
 
     Handler handler = new Handler();
@@ -303,9 +314,37 @@ public class MainActivity extends BaseActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
+
+                hideLoading();
                 ToastUtil.showToast(MainActivity.this,msg);
             }
         });
     }
+    public void shareFile(Uri uri) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ShareUtils.shareFile(MainActivity.this,uri);
+            }
+        });
+    }
 
+
+    public void showLoadings(String msg) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+//                showLoading(msg);
+            }
+        });
+    }
+
+    public void hideLoadings() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                hideLoading();
+            }
+        });
+    }
 }
