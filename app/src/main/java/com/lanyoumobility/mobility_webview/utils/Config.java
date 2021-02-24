@@ -4,11 +4,19 @@ package com.lanyoumobility.mobility_webview.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import com.lanyoumobility.mobility_webview.BuildConfig;
+import com.lanyoumobility.mobility_webview.MyApplication;
+
 public class Config {
+
+    /**掉线*/
+    public static final String ACTION_FORCE_OFFLINE = "com.lanyoumobility.mobility_webview.FORCE_OFFLINE";
+
+
 
     /******** 路径/目录, 内置SD卡的根目录: /storage/sdcard0/zyd ************/
     public static final String PATHS_ROOT = Environment
-            .getExternalStorageDirectory().getAbsolutePath() + "/zyd";
+            .getExternalStorageDirectory().getAbsolutePath() + "/tuding";
 
     /******** 路径/目录, 临时目录(打印文件等): /zyd/temp ************/
     public static final String PATHS_IMG = PATHS_ROOT + "/img";
@@ -30,6 +38,15 @@ public class Config {
     /******** 路径/目录, 临时目录(打印文件等): /zyd/temp ************/
     public static final String PATHS_PRINTING = PATHS_ROOT + "/printing";
 
+
+    /******** 路径/目录, 临时目录(文件缓存文件等): /zyd/temp ************/
+    public static final String PATHS_FILECACHE = PATHS_ROOT + "/filecachce";
+
+
+
+    /******** 路径/目录, 临时目录(打印文件等): /zyd/apk ************/
+    public static final String PATHS_APK = PATHS_ROOT + "/apk";
+    public static final String APK_NAME = "lianyouManager.apk";
 
 
     /******** 路径/目录, 临时目录(打印文件等): /zyd/temp ************/
@@ -66,5 +83,15 @@ public class Config {
         return SharedPreferencesUtils.getString(context,SP_IMAGE_INFO,"");
     }
 
+    public static final String SP_ACCESS_TOKEN = "SP_ACCESS_TOKEN";
 
+    public static void saveAccessToken(String accessToken){
+        SharedPreferencesUtils.saveString(MyApplication.getInstance(),SP_ACCESS_TOKEN,accessToken);
+    }
+
+
+
+    public static String getAccessToken(){
+        return SharedPreferencesUtils.getString(MyApplication.getInstance(),SP_ACCESS_TOKEN,"");
+    }
 }

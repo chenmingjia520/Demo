@@ -40,7 +40,6 @@ public class DownloaderTask extends AsyncTask<String, Void, String> {
 
 
     @Override
-
     protected String doInBackground(String... params) {
         String url = params[0];
         String fileName = url.substring(url.lastIndexOf("/") + 1);

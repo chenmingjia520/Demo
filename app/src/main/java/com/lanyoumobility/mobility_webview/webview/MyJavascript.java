@@ -8,12 +8,14 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 import com.lanyoumobility.mobility_webview.BuildConfig;
-import com.lanyoumobility.mobility_webview.MainActivity;
+import com.lanyoumobility.mobility_webview.ui.activity.MainActivity;
 import com.lanyoumobility.mobility_webview.utils.Config;
 import com.lanyoumobility.mobility_webview.utils.FilesUtils;
 import com.lanyoumobility.mobility_webview.utils.L;
 import com.lanyoumobility.mobility_webview.utils.doc.WordUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -262,21 +264,47 @@ public class MyJavascript extends Object {
      */
     @JavascriptInterface
     public void saveImageInfo(String param, String callbackSuccess, String callbackFail, String callbackComplete) {
-        if (param != null) {
-            File directory = new File(Config.PATHS_DATA);
-            if (directory.exists()) {
-                directory.mkdirs();
+        L.log("saveImageInfoAAA","开始存储::22222:::::::param:::::"+System.currentTimeMillis());
+        L.log("saveImageInfoAAA","开始存储::callbackSuccess::::::::::::"+callbackSuccess);
+        L.log("saveImageInfoAAA","开始存储::callbackSuccess::::::::::::"+activity.isLoding);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (param != null) {
+                    File directory = new File(Config.PATHS_DATA);
+                    if (directory.exists()) {
+                        directory.mkdirs();
+                    }
+                    File file = new File(Config.PATHS_DATA_FILE);
+                    if(!activity.isLoding||"callbackSuccess".equals(callbackSuccess)){
+                        try {
+                            L.log("saveImageInfoAAA","开始存储::3333::::::::::::"+System.currentTimeMillis());
+                            L.log(TAG,"param::kaicun存储::::::::::::");
+                            JSONObject jsonObject = new JSONObject(param);
+                            JSONArray jsonArray = jsonObject.getJSONArray("images");
+                            L.log(TAG,"param::jsonArray::::::::::::"+jsonArray.length());
+                            if(jsonArray.length()>0){
+                                L.log("saveImageInfoAAA","开始存储::44444::::::::::::"+System.currentTimeMillis());
+                                FilesUtils.writeToFile(file, param, false);
+                                if("callbackSuccess".equals(callbackSuccess)){
+                                    activity.showToast("保存成功!");
+                                    return;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                activity.hideLoadings();
+                return;
             }
-            File file = new File(Config.PATHS_DATA_FILE);
-            if(!activity.isLoding){
-                FilesUtils.writeToFile(file, param, false);
-            }
-//            Config.saveImageInfos(activity,param);
-        }
+        }).start();
     }
 
 
-    private int postLenght = 1000;
+    private int postLenght = 2000000;
     private String separate = "&&##@@";
 
     /*
@@ -290,6 +318,8 @@ public class MyJavascript extends Object {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                L.i(TAG,"getImageInfo::::11111111111::::activity.isLoding::::::"+activity.isLoding);
+
                 File file = new File(Config.PATHS_DATA_FILE);
                 if (file.exists()) {
                     L.i(TAG, "文件存在");
@@ -307,9 +337,9 @@ public class MyJavascript extends Object {
                                     data = imageInfo.substring(0, postLenght);
                                     imageInfo = imageInfo.substring(postLenght, imageInfo.length());
                                 }
+
+                                L.log("saveImageInfoAAA","开始存储::55555::::::::::::"+number);
                                 String msgData = number + separate + (x + 1) + separate + data;
-
-
                                 webView.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -334,6 +364,8 @@ public class MyJavascript extends Object {
                 }
 
                 activity.isLoding = false;
+
+                L.i(TAG,"getImageInfo::::22222222222::::activity.isLoding::::::"+activity.isLoding);
             }
         }).start();
     }

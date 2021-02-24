@@ -18,17 +18,26 @@
         android:theme="@style/AppTheme">
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
-
-        <activity android:name=".MainActivity"
-            android:configChanges="keyboardHidden|orientation|locale"
-            >
+        <activity
+            android:name="com.lanyoumobility.mobility_webview.ui.activity.WelcomeActivity"
+            android:theme="@style/WelcomeTheme"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.MainActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|locale"   />
+        <activity android:name=".ui.activity.ImportProjectActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|locale"   />
 
+        <activity android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|locale"   />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -40,6 +49,16 @@
                 android:resource="@xml/filepaths"/>
         </provider>
 
+        <receiver android:name="com.lanyoumobility.mobility_webview.receiver.ForceOfflineReceiver">
+            <intent-filter>
+                <action android:name="com.lanyoumobility.mobility_webview.FORCE_OFFLINE" />
+            </intent-filter>
+        </receiver>
+
+
+        <meta-data
+            android:name="com.lanyoumobility.mobility_webview.glide.GlideCache"
+            android:value="AppGlideModule" />
 
     </application>
 

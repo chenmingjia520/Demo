@@ -64,6 +64,12 @@ public class DirUtils {
 					if (!printingdir.exists()) {
 						printingdir.mkdir();
 					}
+
+					// 文件缓存目录
+					File filecachedir = new File(Config.PATHS_FILECACHE);
+					if (!filecachedir.exists()) {
+						filecachedir.mkdir();
+					}
 				} else {
 					L.i(TAG, "SD卡不可用!");
 				}

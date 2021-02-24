@@ -1,6 +1,8 @@
 package com.lanyoumobility.mobility_webview.utils;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.RequiresApi;
@@ -12,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,6 +77,107 @@ public class FilesUtils {
         }
         return file;
     }
+
+
+    public static String saveFile(String dir, String name, InputStream is) {
+        if (mkdirIfNotFound(dir)) {
+            try {
+                FileOutputStream fos = new FileOutputStream(new File(dir, name));
+                byte[] b = new byte[1024];
+                int len = 0;
+                while ((len = is.read(b)) != -1) {
+                    fos.write(b, 0, len);
+                }
+                is.close();
+                fos.close();
+                return dir + File.separator + name;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static String saveFile(Activity activity,String dir, String name, Uri uri) {
+        if (mkdirIfNotFound(dir)) {
+            try {
+                FileOutputStream fos = new FileOutputStream(new File(dir, name));
+                byte[] b = new byte[1024];
+                int len = 0;
+                InputStream is = activity.getContentResolver().openInputStream(uri);
+                while ((len = is.read(b)) != -1) {
+                    fos.write(b, 0, len);
+                }
+                is.close();
+                fos.close();
+                return dir + File.separator + name;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+    public static String  renameToFile(File oldFile, String fileName) {
+        String oldFileName = oldFile.getName();
+        String[] arrName = oldFileName.split("\\.");
+        if(arrName.length!=2){
+            return "";
+        }
+        String rootPath = oldFile.getParent();
+        File newFile = new File(rootPath + File.separator +fileName+"."+arrName[1]);
+        if(oldFile.renameTo(newFile)){
+            oldFile.delete();
+            return newFile.getAbsolutePath();
+        }
+        return "";
+    }
+
+    public static void   deleteFile() {
+        File file = new File(Config.PATHS_IMG+File.separator+"avator.jpg");
+        if(file.exists()){
+            file.delete();
+        }
+    }
+    /**
+     * 重命名文件
+     * @param fileName
+     * @return
+     */
+    public static void renameFile(String filePath, String fileName) {
+        String oldFileName = filePath+"/"+fileName;
+        File oldFile = new File(oldFileName);
+        String newFileName = filePath+"/"+fileName.split("\\.")[0]+"-------______"+"."+fileName.split("\\.")[1];
+        File newFile = new File(newFileName);
+        if (oldFile.exists() && oldFile.isFile()) {
+            oldFile.renameTo(newFile);
+        }
+    }
+
+
+
+    /**
+     * 检查并建立指定的目录
+     *
+     * @param dirPath 目录的路径
+     * @return 是否成功建立目录
+     */
+    public static boolean mkdirIfNotFound(String dirPath) {
+        if (TextUtils.isEmpty(dirPath)) {
+            return false;
+        }
+        File dir = new File(dirPath);
+        if (dir.mkdirs() || dir.isDirectory()) {
+            return true;
+        }
+        return false;
+    }
+
 
 
     /**

@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.lanyoumobility.mobility_webview.dialog.ProgressDialogs;
+import com.lanyoumobility.mobility_webview.widget.ProgressDialogs;
 import com.lanyoumobility.mobility_webview.interfaces.CheckPermListener;
+import com.lanyoumobility.mobility_webview.permissionlib.EasyPermissions;
+import com.lanyoumobility.mobility_webview.utils.L;
+import com.lanyoumobility.mobility_webview.ui.activity.MainActivity;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class BaseActivity extends Activity  implements
 
 
     public void showLoading(String msg) {
+        L.i("MainActivity","MainActivity::::::::showLoading::::::::"+msg);
         if (mProgressDialogs != null) {
             mProgressDialogs.showDialog(msg);
         }
@@ -33,6 +37,8 @@ public class BaseActivity extends Activity  implements
 
 
     public void hideLoading() {
+
+        L.i("MainActivity","MainActivity::::::::hideLoading::::::::"+ MainActivity.isLoding);
         if (mProgressDialogs != null) {
             mProgressDialogs.closeDialog();
         }

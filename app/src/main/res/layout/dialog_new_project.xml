@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/popBg">
+
+    <LinearLayout
+        android:id="@+id/ll_window"
+        android:layout_width="280dp"
+        android:layout_height="355dp"
+        android:layout_centerInParent="true"
+        android:padding="10dp"
+        android:background="@drawable/shape_corner_rect_white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新建项目"
+            android:layout_gravity="center_horizontal"
+            android:textSize="16sp"
+            android:textColor="@color/text_color_black"/>
+        <ImageView
+            android:id="@+id/iv_item"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/iv_folder" />
+        <com.lanyoumobility.mobility_webview.view.ClearableEditText
+            android:id="@+id/et_project_name"
+            style="@style/edittext_login"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:hint="请输入项目名称"
+            android:maxLength="20"
+            android:textColorHint="@color/text_color_grey" />
+
+        <LinearLayout
+            android:id="@+id/ll_login_init"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_corner_rect_orange"
+                android:gravity="center"
+                android:paddingLeft="35dp"
+                android:paddingTop="3dp"
+                android:paddingRight="35dp"
+                android:paddingBottom="3dp"
+                android:layout_marginRight="20dp"
+                android:text="取消"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_corner_rect_blue"
+                android:gravity="center"
+                android:paddingLeft="35dp"
+                android:paddingTop="3dp"
+                android:paddingRight="35dp"
+                android:paddingBottom="3dp"
+                android:text="确认"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

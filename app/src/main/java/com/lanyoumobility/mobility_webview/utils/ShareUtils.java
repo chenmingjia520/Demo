@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.lanyoumobility.mobility_webview.R;
@@ -97,8 +100,22 @@ public class ShareUtils {
         } else {
             intent.setType("application/octet-stream"); // 其他的均使用流当做二进制数据来发送
         }
-        context.startActivity(intent); // 调用系统的mail客户端进行发送
+
+//        context.startActivity(intent); // 调用系统的mail客户端进行发送
+        context.startActivity(Intent.createChooser(intent, "Set as default to enable Kiosk Mode"));//设置不需要默认的分享
     }
+
+
+    private static boolean hasPreferredApplication(Context context,Intent intent  ){
+        PackageManager pm = context.getPackageManager();
+        ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if(info!=null){
+            return !"android".equals(info.activityInfo.packageName);
+        }
+        return false;
+    }
+
+
     /**
      * <ul>
      * <li>分享任意类型的<b style="color:red">多个</b>文件|不包含目录</li>
